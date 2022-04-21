@@ -4,11 +4,11 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client {
+public class Client implements Runnable{
 	
 	int port = 9367;
 	DataOutputStream out;
-	Socket mySocket = null;
+	Socket server = null;
 	Scanner scanner = new Scanner(System.in);
 	Scanner inputStreamScanner;
 	
@@ -18,7 +18,7 @@ public class Client {
 			
 			System.out.println("Connecting to the server...");
 			Thread.sleep(2000);
-			Socket server = new Socket(InetAddress.getLocalHost(), port);
+			server = new Socket(InetAddress.getLocalHost(), port);
 			System.out.println("Connected!");
 			Thread.sleep(5000);
 			inputStreamScanner = new Scanner(server.getInputStream());
@@ -37,7 +37,7 @@ public class Client {
 			e.printStackTrace();
 		}
 		
-		return mySocket;
+		return server;
 		
 	}
 	
@@ -45,27 +45,26 @@ public class Client {
 		System.out.println("Write in the message: ");
 		String msg = scanner.nextLine();
 		try {
-			System.out.println("Waiting for the message to be sent...");
-			Thread.sleep(2000);
 			out.writeBytes(msg + "\n");
-			System.out.println("Message sent.\nWaiting for a response from the server...");
 			String response = inputStreamScanner.nextLine();
-			Thread.sleep(1500);
 			System.out.println(response);
 		}
-		catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		
 		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void main(String[] args) {
+	public void close() {
+		try {
+			server.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void run() {
 		
-		Client client = new Client();
-		client.connect();
-		client.comunication();
-				
 	}
 }
