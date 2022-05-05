@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
-public class Client implements Runnable{
+public class Client {
 	
 	int port = 9367;
 	DataOutputStream out;
@@ -17,18 +17,13 @@ public class Client implements Runnable{
 		try {
 			
 			System.out.println("Connecting to the server...");
-			Thread.sleep(2000);
 			server = new Socket(InetAddress.getLocalHost(), port);
 			System.out.println("Connected!");
-			Thread.sleep(5000);
 			inputStreamScanner = new Scanner(server.getInputStream());
 			out = new DataOutputStream(server.getOutputStream());
 			
 		}
 		
-		catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		catch (ConnectException e) {
 			System.out.println("Website does not exists.");
 			System.exit(0);
@@ -43,28 +38,26 @@ public class Client implements Runnable{
 	
 	public void comunication() {
 		System.out.println("Write in the message: ");
-		String msg = scanner.nextLine();
-		try {
-			out.writeBytes(msg + "\n");
-			String response = inputStreamScanner.nextLine();
-			System.out.println(response);
-		}
-		
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void close() {
-		try {
+		String msg = "";
+		Boolean bool = true;
+    	while(bool) {
+    		try {
+    			msg = scanner.nextLine();
+    			bool = !msg.equals("Exit");
+    			out.writeBytes(msg + "\n");
+    			String response = inputStreamScanner.nextLine();
+    			System.out.println("Server: " + response + "\n");
+    		}
+    		
+    		catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    	}
+    	try {
 			server.close();
-		} catch (IOException e) {
+		}
+    	catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	@Override
-	public void run() {
-		
 	}
 }

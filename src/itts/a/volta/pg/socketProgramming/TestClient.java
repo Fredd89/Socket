@@ -7,7 +7,6 @@ public class TestClient {
 		Client client = new Client();
 		client.connect();
 		client.comunication();
-		client.close();
 				
 	}
 	
